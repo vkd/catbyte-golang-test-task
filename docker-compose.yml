@@ -18,3 +18,19 @@ services:
     ports:
       - 6379:6379
     restart: always
+
+  # TODO: Dockerize
+  # messageprocessor: {}
+  # reportingapi: {}
+
+  api:
+    image: catbyte/api
+    build:
+      context: .
+      dockerfile: go.Dockerfile
+      args:
+        APP: api
+    ports:
+      - "9000:9000"
+    environment:
+      - AMQP_URL=amqp://user:password@rabbitmq:5672/
