@@ -4,15 +4,26 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
 )
 
 // TODO: configuration
-const (
-	redisAddr = "localhost:6379"
+var (
+	addr = GetEnv("ADDR", "localhost:9001")
+
+	redisAddr = GetEnv("REDIS_ADDR", "localhost:6379")
 )
+
+func GetEnv(k string, d string) string {
+	v, ok := os.LookupEnv(k)
+	if !ok {
+		return d
+	}
+	return v
+}
 
 type MessageRequest struct {
 	Sender   string `json:"sender"`
@@ -68,5 +79,5 @@ func main() {
 	})
 
 	// TODO: configurable address/port
-	r.Run("localhost:9001")
+	r.Run(addr)
 }

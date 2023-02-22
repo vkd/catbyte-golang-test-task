@@ -33,4 +33,29 @@ services:
     ports:
       - "9000:9000"
     environment:
+      - ADDR=:9000
       - AMQP_URL=amqp://user:password@rabbitmq:5672/
+
+  messageprocessor:
+    image: catbyte/messageprocessor
+    build:
+      context: .
+      dockerfile: go.Dockerfile
+      args:
+        APP: messageprocessor
+    environment:
+      - AMQP_URL=amqp://user:password@rabbitmq:5672/
+      - REDIS_ADDR=redis:6379
+
+  reportingapi:
+    image: catbyte/reportingapi
+    build:
+      context: .
+      dockerfile: go.Dockerfile
+      args:
+        APP: reportingapi
+    ports:
+      - "9001:9001"
+    environment:
+      - ADDR=:9001
+      - REDIS_ADDR=redis:6379

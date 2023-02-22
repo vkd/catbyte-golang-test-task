@@ -13,12 +13,20 @@ import (
 )
 
 // TODO: configuration
-const (
-	amqpURL       = "amqp://user:password@localhost:5672/"
+var (
+	amqpURL       = GetEnv("AMQP_URL", "amqp://user:password@localhost:7001/")
 	amqpQueueName = "events"
 
-	redisAddr = "localhost:6379"
+	redisAddr = GetEnv("REDIS_ADDR", "localhost:6379")
 )
+
+func GetEnv(k string, d string) string {
+	v, ok := os.LookupEnv(k)
+	if !ok {
+		return d
+	}
+	return v
+}
 
 type MessageRequest struct {
 	Sender   string `json:"sender"`
@@ -29,7 +37,7 @@ type MessageRequest struct {
 func main() {
 	// TODO: move to separate function
 	// RabbitMQ
-	conn, err := amqp.Dial("amqp://user:password@localhost:7001/")
+	conn, err := amqp.Dial(amqpURL)
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 

@@ -12,6 +12,8 @@ import (
 
 // TODO: configuration
 var (
+	addr = GetEnv("ADDR", "localhost:9000")
+
 	amqpURL       = GetEnv("AMQP_URL", "amqp://user:password@localhost:7001/")
 	amqpQueueName = "events"
 )
@@ -103,7 +105,7 @@ func main() {
 	})
 
 	// TODO: configurable address/port
-	r.Run("localhost:9000")
+	r.Run(addr)
 }
 
 func failOnError(err error, msg string) {
